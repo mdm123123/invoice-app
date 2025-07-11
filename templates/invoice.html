@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>فاتورة</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            padding: 30px;
+            color: #000;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: center;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo {
+            width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img class="logo" src="/static/thumbnails/logo.jpg" alt="شعار المتجر">
+        <h2>فاتورة شراء</h2>
+    </div>
+    {% if not generate %}
+    <form method="POST" action="/generate">
+        <label>المنتج:</label><input type="text" name="product"><br><br>
+        <label>الكمية:</label><input type="number" name="quantity"><br><br>
+        <label>السعر:</label><input type="number" name="price"><br><br>
+        <button type="submit">طباعة الفاتورة</button>
+    </form>
+    {% else %}
+    <table>
+        <tr>
+            <th>المنتج</th>
+            <th>الكمية</th>
+            <th>السعر</th>
+            <th>الإجمالي</th>
+        </tr>
+        <tr>
+            <td>{{ data['product'] }}</td>
+            <td>{{ data['quantity'] }}</td>
+            <td>{{ data['price'] }} جنيه</td>
+            <td>{{ data['quantity']|int * data['price']|int }} جنيه</td>
+        </tr>
+    </table>
+    {% endif %}
+</body>
+</html>

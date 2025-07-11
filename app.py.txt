@@ -1,0 +1,32 @@
+from flask import Flask, render_template, request, send_file
+import pdfkit
+import os
+from datetime import datetime
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('invoice.html')
+
+@app.route('/generate', methods=['POST'])
+def generate_invoice():
+    data = {
+        'date': datetime.now().strftime("%Y-%m-%d"),
+        'customer_name': request.form['customer_name'],
+        'product_name': request.form['product_name'],
+        'quantity': request.form['quantity'],
+        'price': request.form['price'],
+        'total': int(request.form['quantity']) * float(request.form['price']),
+        'logo': '/static/thumbnails/logo.jpg'
+    }
+
+    rendered = render_template('invoice.html', **data)
+
+    pdf_path = 'invoice.pdf'
+    pdfkit.from_string(rendered, pdf_path)
+
+    return send_file(pdf_path, as_attachment=True)
+
+if __name__ == '__main__':
+    app.run(debug=True)
